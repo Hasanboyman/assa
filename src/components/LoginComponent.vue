@@ -1,14 +1,17 @@
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import {ref} from 'vue';
+import {useRouter} from 'vue-router';
 import axios from 'axios';
+import LoaderGame from '@/LoaderGame.vue'; // Adjust the path as needed
 
 const router = useRouter();
 const email = ref(null);
 const password = ref(null);
+const isLoading = ref(false);
 
 const login = async (event) => {
   event.preventDefault();
+  isLoading.value = true;
 
   try {
     const response = await axios.post("https://back-end-kde2.onrender.com/api-auth/login/", {
@@ -16,7 +19,6 @@ const login = async (event) => {
       password: password.value,
     });
 
-    // Check if login was successful and store the tokens
     if (response.data && response.data.access && response.data.refresh) {
       localStorage.setItem('accessToken', response.data.access);
       localStorage.setItem('refreshToken', response.data.refresh);
@@ -27,6 +29,8 @@ const login = async (event) => {
   } catch (error) {
     console.error('Login failed:', error);
     alert('Invalid credentials, please try again.');
+  } finally {
+    isLoading.value = false;
   }
 };
 </script>
@@ -36,18 +40,23 @@ const login = async (event) => {
     <div class="top"></div>
     <div class="bottom"></div>
     <div class="center">
-      <form @submit="login">
-        <h1 style="justify-content: center;font-size: 25px;padding: 10px ;display: flex">Please Sign In</h1>
-        <div class="input-container">
-          <i class="fa-solid fa-user input-icon"></i>
-          <input type="text" v-model="email" placeholder="Username"/>
-        </div>
-        <div class="input-container">
-          <i class="fa-solid fa-lock input-icon"></i>
-          <input type="password" v-model="password" placeholder="password">
-        </div>
-        <button type="submit">Login</button>
-      </form>
+      <template v-if="isLoading">
+        <LoaderGame/>
+      </template>
+      <template v-else>
+        <form @submit="login">
+          <h1 style="justify-content: center;font-size: 25px;padding: 10px ;display: flex">Please Sign In</h1>
+          <div class="input-container">
+            <i class="fa-solid fa-user input-icon"></i>
+            <input type="text" v-model="email" placeholder="Username"/>
+          </div>
+          <div class="input-container">
+            <i class="fa-solid fa-lock input-icon"></i>
+            <input type="password" v-model="password" placeholder="password">
+          </div>
+          <button type="submit">Login</button>
+        </form>
+      </template>
     </div>
   </div>
 </template>
