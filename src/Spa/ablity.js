@@ -11,12 +11,10 @@ export default function defineAbilitiesFor(role) {
         cannot('use','Create Product');
         cannot('use','Edit');
         cannot('use','Remove');
-    } else if (role === 'kassa') {
-        can('access', 'kassa');
-        cannot('view', 'qoldiqlar');
-        cannot('view', 'RoliComponent');
         cannot('view', 'Actions');
-        cannot('delete', 'anything');
+    } else if (role === 'kassa') {
+can('use','all');
+can('view', 'all');
     }
 
     return build();

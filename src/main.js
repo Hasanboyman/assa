@@ -25,7 +25,7 @@ const router = createRouter({
     linkActiveClass: 'border-b border-blue-500 text-blue-700 hover:text-blue-700 focus:border-blue-500 ',
 });
 const isAuthenticated = () => true;
-const getUserRole = () => 'admin' || 'guest';
+const getUserRole = () => 'kassa' || 'guest';
 
 router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth)) {

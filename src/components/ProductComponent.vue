@@ -180,7 +180,7 @@ onMounted(async () => {
           <th scope="col" class="px-6 py-3">Category</th>
           <th scope="col" class="px-6 py-3">Quantity</th>
           <th scope="col" class="px-6 py-3">Price</th>
-          <th scope="col" class="px-6 py-3">Actions</th>
+          <th scope="col" class="px-6 py-3" v-if="ablity.can('view','Actions')">Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -200,7 +200,7 @@ onMounted(async () => {
               </span>
           </td>
           <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">${{ product.price }}</td>
-          <td class="px-6 py-4">
+          <td class="px-6 py-4" v-if="ablity.can('view','Actions')">
             <button @click="openEditMenu(product)" class="text-green-600 font-medium hover:text-green-400" v-if="ablity.can('use','Edit')">Edit</button>
             |
             <button @click="deleteProduct(product.id)"
