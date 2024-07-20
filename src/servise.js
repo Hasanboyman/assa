@@ -19,6 +19,7 @@ apiClient.interceptors.request.use(config => {
     return Promise.reject(error);
 });
 
+// Add a second request interceptor for setting the refresh token
 apiClient.interceptors.request.use(config => {
     const refreshToken = localStorage.getItem('refreshToken');
     if (refreshToken) {
@@ -40,10 +41,20 @@ export default {
         return apiClient.get('api/products/all');
     },
     createProduct(productData) {
-        return apiClient.post('api/products/create', productData)
+        const url = `api/products/create`;
+        return apiClient.post(url, productData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        });
     },
-    updateProduct(productId, updatedData) {
-        return apiClient.put(`api/products/update/${productId}`, updatedData);
+    updateProduct(id, productData) {
+        const url = `api/products/update/${id}`;
+        return apiClient.put(url, productData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        });
     },
     deleteProduct(productId) {
         return apiClient.delete(`api/products/delete/${productId}`);

@@ -2,7 +2,6 @@
 import { ref, computed, onMounted } from 'vue';
 import apiService from '@/servise';
 
-// States
 const products = ref([]);
 const categories = ref([]);
 const showModal = ref(false);
@@ -18,7 +17,6 @@ const fetchCategories = async () => {
   try {
     const response = await apiService.getAllCategories();
     categories.value = response.data;
-    console.log("Categories fetched successfully");
   } catch (err) {
     console.error('Failed to get categories:', err);
   }
@@ -34,7 +32,6 @@ const fetchProducts = async () => {
         categoryName: category ? category.name : 'Unknown'
       };
     });
-    console.log("Products fetched successfully");
   } catch (err) {
     console.error('Failed to get products:', err);
   }
@@ -44,7 +41,7 @@ const updateCategory = async () => {
   try {
     await apiService.updateCategory(selectedCategory.value.id, selectedCategory.value);
     await fetchCategories();
-    await fetchProducts(); // Refetch products to update the list
+    await fetchProducts();
     showModal.value = false;
   } catch (err) {
     error.value = 'Failed to update category';
@@ -63,12 +60,7 @@ const updateProduct = async () => {
     if (selectedProduct.value.photo instanceof File) {
       formData.append('photo', selectedProduct.value.photo);
     } else {
-      console.error('Selected photo is not a file:', selectedProduct.value.photo);
-    }
-
-    // Log the FormData entries to verify their structure
-    for (const pair of formData.entries()) {
-      console.log(pair[0]+ ', ' + pair[1]);
+      alert('Selected photo is not a file:', selectedProduct.value.photo);
     }
 
     await apiService.updateProduct(selectedProduct.value.id, formData);
@@ -76,7 +68,17 @@ const updateProduct = async () => {
     openModal.value = false;
   } catch (err) {
     error.value = 'Failed to update product';
-    console.error('Failed to update product:', err.response ? err.response.data : err);
+    alert('Failed to update product:', err.response ? err.response.data : err);
+  }
+};
+
+const deleteProduct = async (productId) => {
+  try {
+    await apiService.deleteProduct(productId);
+    await fetchProducts();
+  } catch (err) {
+    error.value = 'Failed to delete product';
+    console.error('Failed to delete product:', err);
   }
 };
 
@@ -87,7 +89,6 @@ const paginatedProducts = computed(() => {
   return products.value.slice(startIndex, startIndex + rowsPerPage);
 });
 
-// Pagination methods
 const goToPage = (page) => {
   currentPage.value = page;
 };
@@ -116,14 +117,13 @@ const editProduct = () => {
 };
 
 const openEditMenu = (product) => {
-  selectedProduct.value = { ...product };
+  selectedProduct.value = Object.assign({}, product);
   editMenuOpen.value = true;
 };
 
-const handleFileUpload = (event) => {
-  const file = event.target.files[0];
+const handleFileUpload = async (event) => {
+  const file = await event.target.files[0];
   if (file) {
-    console.log('File selected:', file);
     selectedProduct.value.photo = file;
   } else {
     console.error('No file selected');
@@ -136,17 +136,14 @@ onMounted(async () => {
 });
 </script>
 
-
 <template>
   <div class="container mx-auto pt-6">
     <div class="items-center flex justify-between">
-      <RouterLink to="/createproduct"
-                  class="bg-red-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-300 hover:bg-red-700 mb-6">
+      <RouterLink to="/createproduct" class="bg-red-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-300 hover:bg-red-700 mb-6">
         Create Product
       </RouterLink>
       <div class="flex flex-end items-center">
-        <RouterLink to="/createCategory"
-                    class="bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-300 hover:bg-blue-700 mb-6">
+        <RouterLink to="/createCategory" class="bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-300 hover:bg-blue-700 mb-6">
           Create Category
         </RouterLink>
       </div>
@@ -169,8 +166,7 @@ onMounted(async () => {
         </tr>
         </thead>
         <tbody>
-        <tr v-for="product in paginatedProducts" :key="product.id"
-            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+        <tr v-for="product in paginatedProducts" :key="product.id" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
           <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">{{ product.id }}</td>
           <td class="p-4">
             <img :src="product.photo" width="20px" height="20px" class="w-28" alt="Product Image" style="border-radius:50%; margin: auto">
@@ -178,9 +174,9 @@ onMounted(async () => {
           <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">{{ product.name }}</td>
           <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">{{ product.categoryName }}</td>
           <td class="px-6 py-4">
-            <span class="inline-block bg-gray-50 border border-gray-300 text-gray-900 w-12 text-center py-2 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-              {{ product.quantity }}
-            </span>
+              <span class="inline-block bg-gray-50 border border-gray-300 text-gray-900 w-12 text-center py-2 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                {{ product.quantity }}
+              </span>
           </td>
           <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">${{ product.price }}</td>
           <td class="px-6 py-4">
@@ -193,7 +189,6 @@ onMounted(async () => {
       </table>
     </div>
 
-    <!-- Pagination -->
     <div class="flex space-x-2 justify-center mt-4">
       <div class="flex justify-center text-gray-600">
         <button @click="prevPage" :disabled="currentPage === 1" class="px-3 py-2 bg-white rounded-md hover:bg-gray-200">
@@ -201,12 +196,10 @@ onMounted(async () => {
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
           </svg>
         </button>
-        <button v-for="page in totalPages" :key="page" @click="goToPage(page)" :class="{ 'bg-gray-300': currentPage === page }"
-                class="px-3 py-2 bg-white rounded-md hover:bg-gray-200">
+        <button v-for="page in totalPages" :key="page" @click="goToPage(page)" :class="{ 'bg-gray-300': currentPage === page }" class="px-3 py-2 bg-white rounded-md hover:bg-gray-200">
           {{ page }}
         </button>
-        <button @click="nextPage" :disabled="currentPage === totalPages"
-                class="px-3 py-2 bg-white rounded-md hover:bg-gray-200">
+        <button @click="nextPage" :disabled="currentPage === totalPages" class="px-3 py-2 bg-white rounded-md hover:bg-gray-200">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
           </svg>
@@ -214,9 +207,7 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- Edit Menu Modal -->
-    <div v-if="editMenuOpen"
-         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 ease-in-out">
+    <div v-if="editMenuOpen" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 ease-in-out">
       <div class="bg-white p-6 rounded-lg shadow-xl w-1/3 transform transition-transform duration-300 ease-in-out scale-105">
         <h2 class="text-xl font-bold mb-4 text-primary1">Edit Menu</h2>
         <div class="flex justify-around">
@@ -230,9 +221,7 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- Modal for Editing Category -->
-    <div v-if="showModal"
-         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 ease-in-out">
+    <div v-if="showModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 ease-in-out">
       <div class="bg-white p-6 rounded-lg shadow-xl w-1/3 transform transition-transform duration-300 ease-in-out scale-105">
         <h2 class="text-xl font-bold mb-4 text-primary1">Edit Category</h2>
         <form @submit.prevent="updateCategory" method="post">
@@ -250,9 +239,7 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- Modal for Editing Product -->
-    <div v-if="openModal"
-         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 ease-in-out">
+    <div v-if="openModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 ease-in-out">
       <div class="bg-white p-6 rounded-lg shadow-xl w-1/3 transform transition-transform duration-300 ease-in-out scale-105">
         <h2 class="text-xl font-bold mb-4 text-primary1">Edit Product</h2>
         <form @submit.prevent="updateProduct" method="post" enctype="multipart/form-data">
@@ -269,7 +256,7 @@ onMounted(async () => {
           <label for="price" class="block text-base mb-2 text-black">Price</label>
           <input v-model="selectedProduct.price" type="number" step="0.01" id="price" class="border w-full text-base px-3 py-2 rounded shadow focus:outline-none focus:ring-0 focus:border-primary1" placeholder="Price">
           <label for="photo" class="block text-base mb-2 text-black">Photo</label>
-          <input type="file" id="photo"  @change="handleFileUpload" ref="file" class="border w-full text-base px-3 py-2 rounded shadow focus:outline-none focus:ring-0 focus:border-primary1">
+          <input type="file" id="photo" @change="handleFileUpload" ref="file" class="border w-full text-base px-3 py-2 rounded shadow focus:outline-none focus:ring-0 focus:border-primary1">
           <div class="mt-16 flex justify-end items-center">
             <button type="button" @click="openModal = false" class="bg-gray-500 border border-gray-400 rounded-full text-white font-bold px-4 py-2 mr-4 transition-all ease-in-out duration-300 hover:bg-gray-600 hover:shadow-lg">
               Cancel

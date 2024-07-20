@@ -29,7 +29,7 @@
         <p class="message__text">We're sorry, the page you were looking for isn't found here. The link you followed may either be broken or no longer exists. Please try again, or take a look at our.</p>
       </div>
       <div class="error__nav e-nav">
-        <router-link to="/kassa" class="e-nav__link"> BACK TO KASSA</router-link>
+        <router-link to="/products" class="e-nav__link"> BACK TO MAIN</router-link>
       </div>
     </div>
     <!-- END Content -->
@@ -318,8 +318,8 @@ button {
   position: relative;
 }
 
-.e-nav__link:after {
-  content: "KASSA Page";
+.e-nav__link::after {
+  content: "MAIN";
 }
 
 .e-nav__link:hover:before {
