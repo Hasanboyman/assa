@@ -7,19 +7,16 @@ export default function defineAbilitiesFor(role) {
         can('access', 'admin');
         can('view', 'all');
         can('use', 'all');
-        cannot('use', 'PulYechish').because('Only Super Admins can use Pul Yechish')
-        cannot('use', 'Inkassa').because('Only Super Admins can use Inkkassa')
+        cannot('use','Create Category');
+        cannot('use','Create Product');
+        cannot('use','Edit');
+        cannot('use','Remove');
     } else if (role === 'kassa') {
         can('access', 'kassa');
         cannot('view', 'qoldiqlar');
         cannot('view', 'RoliComponent');
         cannot('view', 'Actions');
         cannot('delete', 'anything');
-    } else if (role === 'superAdmin') {
-        can('manage', 'all');
-    } else {
-        cannot('access', 'admin');
-        cannot('access', 'kassa');
     }
 
     return build();

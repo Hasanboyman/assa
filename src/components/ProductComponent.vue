@@ -1,6 +1,8 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import apiService from '@/servise';
+import { useAbility } from '@casl/vue';
+
 
 const products = ref([]);
 const categories = ref([]);
@@ -14,6 +16,7 @@ const currentPage = ref(1);
 const rowsPerPage = 3;
 const showAlert = ref(false);
 const alertMessage = ref('');
+const ablity = useAbility();
 
 const fetchCategories = async () => {
   try {
@@ -152,12 +155,12 @@ onMounted(async () => {
 <template>
   <div class="container mx-auto pt-6">
     <div class="items-center flex justify-between">
-      <RouterLink to="/createproduct"
+      <RouterLink to="/createproduct" v-if="ablity.can('use','Create Product')"
                   class="bg-red-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-300 hover:bg-red-700 mb-6">
         Create Product
       </RouterLink>
       <div class="flex flex-end items-center">
-        <RouterLink to="/createCategory"
+        <RouterLink to="/createCategory" v-if="ablity.can('use','Create Category')"
                     class="bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-300 hover:bg-blue-700 mb-6">
           Create Category
         </RouterLink>
@@ -198,10 +201,10 @@ onMounted(async () => {
           </td>
           <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">${{ product.price }}</td>
           <td class="px-6 py-4">
-            <button @click="openEditMenu(product)" class="text-green-600 font-medium hover:text-green-400">Edit</button>
+            <button @click="openEditMenu(product)" class="text-green-600 font-medium hover:text-green-400" v-if="ablity.can('use','Edit')">Edit</button>
             |
             <button @click="deleteProduct(product.id)"
-                    class="text-red-600 font-medium hover:underline dark:text-red-500">Remove
+                    class="text-red-600 font-medium hover:underline dark:text-red-500"  v-if="ablity.can('use','Remove')">Remove
             </button>
           </td>
         </tr>
