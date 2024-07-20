@@ -95,7 +95,7 @@ const showSuccessAlert = (message) => {
   showAlert.value = true;
   setTimeout(() => {
     showAlert.value = false;
-  }, 2000);
+  }, 2300);
 };
 
 const totalPages = computed(() => Math.ceil(products.value.length / rowsPerPage));
@@ -326,7 +326,7 @@ onMounted(async () => {
              xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
         </svg>
-        {{ alertMessage }}
+        {{ alertMessage }} 🎉🎉
         <div class="progress-bar"></div>
       </div>
     </transition>
