@@ -167,20 +167,40 @@ onMounted(async () => {
       </div>
     </div>
 
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg cursor-default">
       <div class="flex justify-between items-center p-4 bg-gray-50 dark:bg-gray-700">
         <h2 class="text-xl font-bold text-gray-900 dark:text-white">Product List</h2>
+        <div class="space-x-2 mt-4">
+          <div class="flex text-gray-600">
+            <button @click="prevPage" :disabled="currentPage === 1" class="px-3 py-2 bg-white rounded-md hover:bg-gray-200">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+              </svg>
+            </button>
+            <button v-for="page in totalPages" :key="page" @click="goToPage(page)"
+                    :class="{ 'bg-gray-300': currentPage === page }"
+                    class="px-3 py-2 bg-white rounded-md hover:bg-gray-200">
+              {{ page }}
+            </button>
+            <button @click="nextPage" :disabled="currentPage === totalPages"
+                    class="px-3 py-2 bg-white rounded-md hover:bg-gray-200">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
       <table class="w-full text-lg text-center text-gray-500 dark:text-gray-400">
         <thead class="text-md text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
         <tr>
-          <th scope="col" class="px-8 py-3">Id</th>
-          <th scope="col" class="px-12 py-3">Image</th>
-          <th scope="col" class="px-6 py-3">Product</th>
-          <th scope="col" class="px-6 py-3">Category</th>
-          <th scope="col" class="px-6 py-3">Quantity</th>
-          <th scope="col" class="px-6 py-3">Price</th>
-          <th scope="col" class="px-6 py-3" v-if="ablity.can('view','Actions')">Actions</th>
+          <th scope="col" class="px-8 py-3 cursor-default">Id</th>
+          <th scope="col" class="px-12 py-3 cursor-default">Image</th>
+          <th scope="col" class="px-6 py-3 cursor-default">Product</th>
+          <th scope="col" class="px-6 py-3 cursor-default">Category</th>
+          <th scope="col" class="px-6 py-3 cursor-default">Quantity</th>
+          <th scope="col" class="px-6 py-3 cursor-default">Price</th>
+          <th scope="col" class="px-6 py-3 cursor-default" v-if="ablity.can('view','Actions')">Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -196,7 +216,7 @@ onMounted(async () => {
           <td class="px-6 py-4">
               <span
                   class="inline-block bg-gray-50 border border-gray-300 text-gray-900 w-12 text-center py-2 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                {{ product.quantity }}
+                {{ product.quantity }}<sup> left</sup>
               </span>
           </td>
           <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">${{ product.price }}</td>
@@ -212,29 +232,9 @@ onMounted(async () => {
       </table>
     </div>
 
-    <div class="flex space-x-2 justify-center mt-4">
-      <div class="flex justify-center text-gray-600">
-        <button @click="prevPage" :disabled="currentPage === 1" class="px-3 py-2 bg-white rounded-md hover:bg-gray-200">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-          </svg>
-        </button>
-        <button v-for="page in totalPages" :key="page" @click="goToPage(page)"
-                :class="{ 'bg-gray-300': currentPage === page }"
-                class="px-3 py-2 bg-white rounded-md hover:bg-gray-200">
-          {{ page }}
-        </button>
-        <button @click="nextPage" :disabled="currentPage === totalPages"
-                class="px-3 py-2 bg-white rounded-md hover:bg-gray-200">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-          </svg>
-        </button>
-      </div>
-    </div>
 
-    <div v-if="editMenuOpen"
-         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 ease-in-out">
+    <button v-if="editMenuOpen" @click="editMenuOpen = false"
+         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 ease-in-out cursor-default">
       <div
           class="bg-white p-6 rounded-lg shadow-xl w-1/3 transform transition-transform duration-300 ease-in-out scale-105">
         <h2 class="text-xl font-bold mb-4 text-primary1">Edit Menu</h2>
@@ -249,7 +249,7 @@ onMounted(async () => {
           </button>
         </div>
       </div>
-    </div>
+    </button>
 
     <div v-if="showModal"
          class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 ease-in-out">

@@ -48,7 +48,7 @@ const login = async (event) => {
           <h1 style="justify-content: center;font-size: 25px;padding: 10px ;display: flex">Please Sign In</h1>
           <div class="input-container">
             <i class="fa-solid fa-user input-icon"></i>
-            <input type="text" v-model="email" placeholder="Username"/>
+            <input type="email" v-model="email" placeholder="Username"/>
           </div>
           <div class="input-container">
             <i class="fa-solid fa-lock input-icon"></i>
