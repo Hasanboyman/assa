@@ -216,7 +216,7 @@ onMounted(async () => {
           <td class="px-6 py-4">
               <span
                   class="inline-block bg-gray-50 border border-gray-300 text-gray-900 w-12 text-center py-2 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                {{ product.quantity }}<sup> left</sup>
+                {{ product.quantity }}<sup left</sup>
               </span>
           </td>
           <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">${{ product.price }}</td>

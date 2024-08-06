@@ -22,6 +22,7 @@ export default {
 
 <style scoped>
 .loader {
+  cursor: progress;
   display: flex;
   flex-direction: column;
   justify-content: center;

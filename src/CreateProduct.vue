@@ -6,7 +6,9 @@ import apiService from '@/servise';
 const productData = ref({
   name: '',
   description: '',
-  category: ''
+  category: '',
+  price: '',
+  quantity: '',
 });
 const photo = ref(null);
 const isLoading = ref(false);
@@ -32,6 +34,8 @@ const createProduct = async () => {
     if (productData.value.name && productData.value.description && productData.value.category && photo.value) {
       const formData = new FormData();
       formData.append('name', productData.value.name);
+      formData.append('price', productData.value.price);
+      formData.append('quantity', productData.value.quantity);
       formData.append('description', productData.value.description);
       formData.append('category', productData.value.category);
       formData.append('photo', photo.value);
@@ -73,6 +77,22 @@ onMounted(fetchCategories);
             v-model="productData.name"
             class="border w-full text-lg px-4 py-2 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 transition duration-150 transform hover:scale-105"
             placeholder="Product Name"
+        />
+        <label for="quantity" class="block text-lg font-semibold mb-2">Quantity</label>
+        <input
+            type="number"
+            id="quantity"
+            v-model="productData.quantity"
+            class="border w-full text-lg px-4 py-2 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 transition duration-150 transform hover:scale-105"
+            placeholder="Product Quantity"
+        />
+        <label for="price" class="block text-lg font-semibold mb-2">Price</label>
+        <input
+            type="number"
+            id="price"
+            v-model="productData.price"
+            class="border w-full text-lg px-4 py-2 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 transition duration-150 transform hover:scale-105"
+            placeholder="Product Price"
         />
 
         <label for="description" class="block text-lg font-semibold mb-2 mt-4">Description</label>
